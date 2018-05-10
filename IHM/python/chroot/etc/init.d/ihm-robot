@@ -1,8 +1,12 @@
-#!/bin/bash
-
-# Apres cette ligne les commandes seront executees systematiquement
-
-# ...
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          ihm-robot
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run /etc/ihm-robot if it exist
+### END INIT INFO
 
 # Apres cette ligne les commandes executees en fonction du parametre passe en ligne de commande
 
