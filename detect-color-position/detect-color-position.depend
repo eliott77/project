@@ -816,3 +816,11 @@
 1519375113 /usr/local/include/opencv2/imgproc/imgproc.hpp
 	"opencv2/imgproc.hpp"
 
+1525970708 source:/home/eliott/workstation/projects/project/detect-color-position/main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	<unistd.h>
+	"opencv2/highgui/highgui.hpp"
+	"opencv2/imgproc/imgproc.hpp"
+
