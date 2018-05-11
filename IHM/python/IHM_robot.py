@@ -8,24 +8,91 @@ fenetre = Tk()
 
 def callback_orange():
   print "Orange selected !"
+  label = Label(fenetre, text="Thank you: Orange selected !")
+  label.place(x=150, y=120, width=200, height=25)
 
 def callback_green():
   print "Green selected !"
   os.system("touch green_detected.txt")
+  label = Label(fenetre, text="Thank you: Green selected !")
+  label.place(x=150, y=120, width=200, height=25)
+
+def callback_strategy1():
+  print "callback_strategy1 !"
+
+def callback_strategy2():
+  print "callback_strategy2 !"
+
+def callback_strategy3():
+  print "callback_strategy3 !"
+
+def callback_strategy4():
+  print "callback_strategy4 !"
 
 def callback_close_all():
   fenetre.quit
 
-def callback_next():
+def callback_score():
+  score_IHM = Toplevel()
+
+  # Image Idle
+  photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
+  canvas1 = Canvas(score_IHM,width=480, height=81)
+  canvas1.create_image(0, 0, anchor=NW, image=photo1)
+  canvas1.pack()
+  score_IHM.geometry("480x320+0+0")
+
+  # Select the score required
+  label = Label(score_IHM, text="Select a score !")
+  label.place(x=180, y=120, width=150, height=25)
+
+  score_IHM.mainloop()
+
+def callback_start():
+  start_IHM = Toplevel()
+  
+  start_IHM.configure(background='orange')
+  start_IHM.geometry("480x320+0+0")
+
+  # Insert Label
+  label = Label(start_IHM, text="GO GOLDORAK !", bg="orange")
+  label.place(x=180, y=120, width=150, height=50)
+   
+  start_IHM.mainloop()
+
+def callback_camera_display():
+  camera_display_IHM = Toplevel()
+  #photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
+  #canvas1 = Canvas(camera_display_IHM,width=480, height=81)
+  #canvas1.create_image(0, 0, anchor=NW, image=photo1)
+  #canvas1.pack()
+  camera_display_IHM.geometry("480x320+0+0")
+  
+  # enable camera
+  os.system("fswebcam -d /dev/video0 -r 160x120 --jpeg 85 ./pictures/camera-picture.jpg")
+  os.system("sleep 1")
+  photo2 = PhotoImage(file="./pictures/camera-picture.jpg")
+  canvas2 = Canvas(camera_display_IHM,width=480, height=130)
+  canvas2.create_image(0, 0, anchor=NW, image=photo2)
+  canvas2.pack()
+
+  # bouton previous
+  bt_previous=Button(camera_display_IHM, text="Main Page",command=camera_display_IHM.destroy)
+  bt_previous.place(x=5, y=295, width=100, height=25)
+  
+  camera_display_IHM.mainloop()
+
+def callback_camera_settings():
   camera_IHM = Toplevel()
-  photo1 = PhotoImage(file="/home/eliott/Pictures/goldorak-ihm.png")
+  photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
   canvas1 = Canvas(camera_IHM,width=480, height=81)
   canvas1.create_image(0, 0, anchor=NW, image=photo1)
   canvas1.pack()
   camera_IHM.geometry("480x320+0+0")
+
   # bouton previous
-  bt_previous=Button(camera_IHM, text="Previous Page",command=camera_IHM.destroy)
-  bt_previous.place(x=5, y=300, width=100, height=25)
+  bt_previous=Button(camera_IHM, text="Main Page",command=camera_IHM.destroy)
+  bt_previous.place(x=5, y=295, width=100, height=25)
 
   # Configuration Hue
   label_Hue = Label(camera_IHM, text="Hue")
@@ -70,15 +137,49 @@ def callback_next():
   label_Val_max.place(x=400, y=250, width=70, height=25)
   camera_IHM.mainloop()
 
-# Rotate screen - Ubuntu
-#os.system("xrandr -o right")
+def callback_strategy():
+  strategy_IHM = Toplevel()
+  photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
+  canvas1 = Canvas(strategy_IHM,width=480, height=81)
+  canvas1.create_image(0, 0, anchor=NW, image=photo1)
+  canvas1.pack()
+  strategy_IHM.geometry("480x320+0+0")
+  label = Label(strategy_IHM, text="Select your strategy !")
+  label.place(x=180, y=120, width=150, height=25)
 
-label = Label(fenetre, text="What color is it ?")
-label.pack()
+  # Bouton Strategy 1
+  bt_strg1=Button(strategy_IHM, text="Strategy 1", command=callback_strategy1)
+  bt_strg1.configure(background='blue')
+  bt_strg1.place(x=100, y=150, width=140, height=50)
+
+  # Bouton Strategy 2
+  bt_strg2=Button(strategy_IHM, text="Strategy 2", command=callback_strategy2)
+  bt_strg2.configure(background='white')
+  bt_strg2.place(x=240, y=150, width=140, height=50)
+
+  # Bouton Strategy 3
+  bt_strg3=Button(strategy_IHM, text="Strategy 3", command=callback_strategy3)
+  bt_strg3.configure(background='red')
+  bt_strg3.place(x=100, y=205, width=140, height=50)
+
+  # Bouton Strategy 4
+  bt_strg4=Button(strategy_IHM, text="Strategy 4", command=callback_strategy4)
+  bt_strg4.configure(background='purple')
+  bt_strg4.place(x=240, y=205, width=140, height=50)
+
+  # bouton previous
+  bt_previous=Button(strategy_IHM, text="Main Page",command=strategy_IHM.destroy)
+  bt_previous.place(x=5, y=295, width=100, height=25)
+  #strategy_IHM.overrideredirect(1)
+  strategy_IHM.mainloop()
+
+
+label = Label(fenetre, text="Select a color !")
+label.place(x=180, y=120, width=150, height=25)
 
 # bouton de sortie
 bouton=Button(fenetre, text="Close", command=fenetre.quit)
-bouton.place(x=430, y=0, width=50, height=25)
+bouton.place(x=5, y=295, width=50, height=25)
 
 # Bouton orange
 bt_orange=Button(fenetre, text="Orange", command=callback_orange)
@@ -94,14 +195,30 @@ w, h = fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()
 #fenetre.geometry("%dx%d+0+0" % (w, h))
 fenetre.geometry("480x320+0+0")
 
-photo = PhotoImage(file="/home/eliott/Pictures/goldorak-ihm.png")
+photo = PhotoImage(file="./pictures/goldorak-ihm.png")
 canvas = Canvas(fenetre,width=480, height=81)
 canvas.create_image(0, 0, anchor=NW, image=photo)
 canvas.pack()
 
-# Bouton next page
-bouton=Button(fenetre, text="Next Page", command=callback_next)
-bouton.place(x=410, y=300, width=70, height=25)
+# Bouton Start
+bouton=Button(fenetre, text="START", command=callback_start)
+bouton.place(x=350, y=175, width=120, height=25)
+
+# Bouton Store
+bouton=Button(fenetre, text="Score", command=callback_score)
+bouton.place(x=350, y=205, width=120, height=25)
+
+# Bouton camera settings
+bouton=Button(fenetre, text="Camera Settings", command=callback_camera_settings)
+bouton.place(x=350, y=235, width=120, height=25)
+
+# Bouton camera display
+bouton=Button(fenetre, text="Camera Display", command=callback_camera_display)
+bouton.place(x=350, y=265, width=120, height=25)
+
+# Bouton Strategy settings
+bouton=Button(fenetre, text="Strategy Settings", command=callback_strategy)
+bouton.place(x=350, y=295, width=120, height=25)
 
 fenetre.mainloop()
-#fenetre.destroy()
+
