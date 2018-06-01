@@ -33,10 +33,36 @@
 
 using namespace cv;
 using namespace std;
-int detect_form(IplImage* img,int detect_color);
-int save_data (CvPoint side0, CvPoint side1, CvPoint side2, CvPoint side3, int s16Color, int figure_idx);
+
 unsigned char u8OpenFileFirst = true;
 
+int save_data (const char* s8Color)
+{
+  const char *s8FileName = "/home/eliott/color_detected.txt";
+  fstream outputFile;
+  string line;
+
+  if (u8OpenFileFirst == true)
+  {
+    //Clean all file
+    outputFile.open(s8FileName, ios::out | ios::trunc);
+    u8OpenFileFirst = false;
+  }
+  else
+  {
+    outputFile.open(s8FileName);
+  }
+  outputFile.clear();
+  while ( getline (outputFile,line) )
+  {
+      cout << line << '\n';
+  }
+  outputFile.clear();
+  outputFile << s8Color << " Color has been detected" <<  endl;
+  outputFile.close();
+
+  return 0;
+}
 
 // Prints the usage for this program
 static void print_usage(bool help)
@@ -319,11 +345,6 @@ while (detect_color <= COLOR_NBR)
 
   imshow("Thresholded Image", imgThresholded); //show the thresholded image
 
-  /*char a8ImgThName[50];
-      sprintf(a8ImgThName,"/home/eliott/Downloads/Pictures/webcam-shot-imgThresholded-%s.jpg",s8ColorName);
-      imwrite(a8ImgThName,imgThresholded);
-
-  IplImage* new_image =  cvLoadImage(a8ImgThName);*/
 
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -338,10 +359,9 @@ while (detect_color <= COLOR_NBR)
     int cpt = 0;
     for( ; idx >= 0; idx = hierarchy[idx][0] )
     {
-        Scalar color( rand()&255, rand()&255, rand()&255 );
-        drawContours( dst, contours, idx, color, CV_FILLED, 8, hierarchy );
-         //1cvRectangle( dst, contours, idx, color, CV_FILLED, 8, hierarchy );
-        cpt++;
+      sScalar color( rand()&255, rand()&255, rand()&255 );
+      drawContours( dst, contours, idx, color, CV_FILLED, 8, hierarchy );
+      cpt++;
     }
 
     if ( cpt > 1)
@@ -351,11 +371,13 @@ while (detect_color <= COLOR_NBR)
    else
     {
       cout << s8Color << " Color has been detected" <<  endl;
+
+      save_data(s8Color);
     }
 
-  //detect_form(new_image,detect_color);
   imshow( "Components", dst );
   imshow("Original", imgOriginal); //show the original image
+
 //cvWaitKey(0);
   #ifdef DEBUG_MENU
    cvWaitKey(0);
@@ -376,180 +398,3 @@ while (detect_color <= COLOR_NBR)
 
   return 0;
 }
-
-int save_data (CvPoint side0, CvPoint side1, CvPoint side2, CvPoint side3, int s16Color, int figure_idx)
-{
-
-  fstream outputFile;
-  string line;
-  const char *s8Color = "GREEN";
-
-  switch (s16Color)
-  {
-    case GREEN_DETECT:
-       s8Color = "GREEN";
-       break;
-    case YELLOW_DETECT:
-       s8Color = "YELLOW";
-       break;
-    case BLUE_DETECT:
-       s8Color = "BLUE";
-       break;
-    case BLACK_DETECT:
-       s8Color = "BLACK";
-       break;
-    case ORANGE_DETECT:
-       s8Color = "ORANGE";
-       break;
-
-  };
-
-  if (u8OpenFileFirst == true)
-  {
-    //Clean all file
-    outputFile.open("/home/eliott/color_detected.txt", ios::out | ios::trunc);
-    u8OpenFileFirst = false;
-  }
-  else
-  {
-    outputFile.open("/home/eliott/color_detected.txt");
-  }
-
-  outputFile.clear();
-  while ( getline (outputFile,line) )
-  {
-      cout << line << '\n';
-  }
-  outputFile.clear();
-  outputFile << "\n\nFigure ID: ";
-  outputFile << figure_idx  << endl;
-  outputFile << "\nColor detected: " ;
-  outputFile << s8Color << endl;
-  outputFile << "\nside0 (X-Y): " << endl;
-  outputFile << side0.x;
-  outputFile << " - ";
-  outputFile << side0.y;
-  outputFile << "\nside1 (X-Y): " << endl;
-  outputFile << side1.x;
-  outputFile << " - ";
-  outputFile << side1.y;
-  outputFile << "\nside2 (X-Y): " << endl;
-  outputFile << side2.x;
-  outputFile << " - ";
-  outputFile << side2.y;
-  outputFile << "\nside3 (X-Y): " << endl;
-  outputFile << side3.x;
-  outputFile << " - ";
-  outputFile << side3.y << endl;
-  outputFile.close();
-
-  return 0;
-}
-
- int detect_form(IplImage* img, int detect_color)
-{
-	int figure_idx = 0;
-	//show the original image
-	cvNamedWindow("Raw");
-	cvShowImage("Raw",img);
-
-	//converting the original image into grayscale
-	IplImage* imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1);
-	cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
-
-	//thresholding the grayscale image to get better results
-	cvThreshold(imgGrayScale,imgGrayScale,128,255,CV_THRESH_BINARY);
-
-	CvSeq* contour;  //hold the pointer to a contour
-	CvSeq* result;   //hold sequence of points of a contour
-	CvMemStorage *storage = cvCreateMemStorage(0); //storage area for all contours
-
-	//finding all contours in the image
-	cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
-
-#if 0
-//iterating through each contour
-	while(contour)
-	{
-		//counter of figure detected
-        figure_idx++;
-
-		//obtain a sequence of points of the countour, pointed by the variable 'countour'
-		result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.02, 0);
-
-		//if there are 3 vertices  in the contour(It should be a triangle)
-		if(result->total==3 )
-		{
-			//iterating through each point
-			CvPoint *pt[3];
-			for(int i=0;i<3;i++){
-				pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-			}
-
-			//drawing lines around the triangle - Red color
-			cvLine(img, *pt[0], *pt[1], cvScalar(255,0,0),4);
-			cvLine(img, *pt[1], *pt[2], cvScalar(255,0,0),4);
-			cvLine(img, *pt[2], *pt[0], cvScalar(255,0,0),4);
-
-		}
-
-		//if there are 4 vertices  in the contour(It should be a quadrilateral)
-		else if(result->total==4 )
-		{
-			//iterating through each point
-			CvPoint *pt[4];
-			for(int i=0;i<4;i++){
-				pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-			}
-
-            save_data(*pt[0], *pt[1], *pt[2], *pt[3], detect_color, figure_idx);
-			//drawing lines around the quadrilateral - Green color
-			cvLine(img, *pt[0], *pt[1], cvScalar(0,255,0),4);
-			cvLine(img, *pt[1], *pt[2], cvScalar(0,255,0),4);
-			cvLine(img, *pt[2], *pt[3], cvScalar(0,255,0),4);
-			cvLine(img, *pt[3], *pt[0], cvScalar(0,255,0),4);
-		}
-
-		//if there are 7 vertices  in the contour(It should be a heptagon)
-		else if(result->total ==7  )
-		{
-			//iterating through each point
-			CvPoint *pt[7];
-			for(int i=0;i<7;i++){
-				pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-			}
-
-			//drawing lines around the heptagon - Blue color
-			cvLine(img, *pt[0], *pt[1], cvScalar(0,0,255),4);
-			cvLine(img, *pt[1], *pt[2], cvScalar(0,0,255),4);
-			cvLine(img, *pt[2], *pt[3], cvScalar(0,0,255),4);
-			cvLine(img, *pt[3], *pt[4], cvScalar(0,0,255),4);
-			cvLine(img, *pt[4], *pt[5], cvScalar(0,0,255),4);
-			cvLine(img, *pt[5], *pt[6], cvScalar(0,0,255),4);
-			cvLine(img, *pt[6], *pt[0], cvScalar(0,0,255),4);
-		}
-
-		//obtain the next contour
-		contour = contour->h_next;
-	}
-CvFont * font = new CvFont;
-cvInitFont(font, CV_FONT_VECTOR0, 0.5f, 1.0f, 0, 1, 8); //rate of width and height is 1:2
-char szText[8];
-sprintf(szText, "TextOut");  //make string
-cvPutText(img, szText, Point(200,250), font, CV_RGB(255, 255, 255)); //draw text on the IplImage* (Image)
-#endif
-	//show the image in which identified shapes are marked
-	cvNamedWindow("Tracked");
-	cvShowImage("Tracked",img);
-
-	cvWaitKey(0); //wait for a key press
-
-	//cleaning up
-	//cvDestroyAllWindows();
-	cvReleaseMemStorage(&storage);
-	cvReleaseImage(&img);
-	cvReleaseImage(&imgGrayScale);
-
-	return 0;
-}
-
