@@ -1,1 +1,4 @@
-g++ opencv-zoom.cpp -o opencv-zoom `pkg-config --cflags opencv` `pkg-config opencv --libs`
+--------------------
+Compilation native
+--------------------
+g++ opencv-detect-color.cpp -o opencv-detect-color `pkg-config --cflags opencv` `pkg-config opencv --libs`
