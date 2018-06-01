@@ -21,7 +21,7 @@ int main( int argc, char** argv )
   while(1)
   {
 
-    imgOriginal = imread("/home/eliott/workstation/projects/project/detect-color-position/pictures/image1-resize-800x600.jpg");
+    imgOriginal = imread("pictures/image1-resize-800x600.jpg");
   //Create trackbars in "Control" window
   namedWindow("Control_Image", CV_WINDOW_AUTOSIZE); //create a window called "Control"
     createTrackbar("iTpX", "Control_Image", &iTpX, 4000); 
@@ -46,7 +46,7 @@ int main( int argc, char** argv )
     // Crop image
     cropped = imgOriginal(roi);
 
-    imwrite("/home/eliott/workstation/projects/project/detect-color-position/pictures/image1-cropped.jpg",cropped);
+    imwrite("pictures/image1-cropped.jpg",cropped);
     imshow("cropped", cropped);
     cvWaitKey(1000);
   }
