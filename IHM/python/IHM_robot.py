@@ -5,15 +5,18 @@ from Tkinter import *
 import os
 
 fenetre = Tk()
+color_selected = "green"
 
 def callback_orange():
   print "Orange selected !"
   label = Label(fenetre, text="Thank you: Orange selected !")
   label.place(x=150, y=120, width=200, height=25)
+  color_selected = "orange"
 
 def callback_green():
   print "Green selected !"
   os.system("touch green_detected.txt")
+  color_selected = "green"
   label = Label(fenetre, text="Thank you: Green selected !")
   label.place(x=150, y=120, width=200, height=25)
 
@@ -45,36 +48,38 @@ def callback_score():
   # Select the score required
   label = Label(score_IHM, text="Select a score !")
   label.place(x=180, y=120, width=150, height=25)
-
+  
+  s = Spinbox(score_IHM, from_=0, to=500)
+  s.pack()
   score_IHM.mainloop()
 
 def callback_start():
   start_IHM = Toplevel()
   
-  start_IHM.configure(background='orange')
+  start_IHM.configure(background=color_selected)
   start_IHM.geometry("480x320+0+0")
 
   # Insert Label
-  label = Label(start_IHM, text="GO GOLDORAK !", bg="orange")
+  label = Label(start_IHM, text="GO GOLDORAK !", bg=color_selected)
   label.place(x=180, y=120, width=150, height=50)
    
   start_IHM.mainloop()
 
 def callback_camera_display():
   camera_display_IHM = Toplevel()
-  #photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
-  #canvas1 = Canvas(camera_display_IHM,width=480, height=81)
-  #canvas1.create_image(0, 0, anchor=NW, image=photo1)
-  #canvas1.pack()
+  photo1 = PhotoImage(file="./pictures/goldorak-ihm.png")
+  canvas1 = Canvas(camera_display_IHM,width=480, height=81)
+  canvas1.create_image(0, 0, anchor=NW, image=photo1)
+  canvas1.pack()
   camera_display_IHM.geometry("480x320+0+0")
   
   # enable camera
-  os.system("fswebcam -d /dev/video0 -r 160x120 --jpeg 85 ./pictures/camera-picture.jpg")
+  os.system("fswebcam -d /dev/video0 -r 320x240 --png 5 ./pictures/camera-picture.png")
   os.system("sleep 1")
-  photo2 = PhotoImage(file="./pictures/camera-picture.jpg")
-  canvas2 = Canvas(camera_display_IHM,width=480, height=130)
+  photo2 = PhotoImage(file="./pictures/camera-picture.png")
+  canvas2 = Canvas(camera_display_IHM,width=320, height=240)
   canvas2.create_image(0, 0, anchor=NW, image=photo2)
-  canvas2.pack()
+  canvas2.place(x=100, y=70)
 
   # bouton previous
   bt_previous=Button(camera_display_IHM, text="Main Page",command=camera_display_IHM.destroy)
@@ -175,21 +180,17 @@ def callback_strategy():
 
 
 label = Label(fenetre, text="Select a color !")
-label.place(x=180, y=120, width=150, height=25)
-
-# bouton de sortie
-bouton=Button(fenetre, text="Close", command=fenetre.quit)
-bouton.place(x=5, y=295, width=50, height=25)
+label.place(x=220, y=120, width=150, height=25)
 
 # Bouton orange
 bt_orange=Button(fenetre, text="Orange", command=callback_orange)
 bt_orange.configure(background='orange')
-bt_orange.place(x=100, y=150, width=140, height=50)
+bt_orange.place(x=140, y=150, width=140, height=50)
 
 # Bouton vert
 bt_green=Button(fenetre, text="Green", command=callback_green)
 bt_green.configure(background='green')
-bt_green.place(x=240, y=150, width=140, height=50)
+bt_green.place(x=280, y=150, width=140, height=50)
 w, h = fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()
 #fenetre.overrideredirect(1)
 #fenetre.geometry("%dx%d+0+0" % (w, h))
@@ -200,25 +201,36 @@ canvas = Canvas(fenetre,width=480, height=81)
 canvas.create_image(0, 0, anchor=NW, image=photo)
 canvas.pack()
 
+
+# Create Label frame
+l = LabelFrame(fenetre, text="Menu", padx=20, pady=20)
+l.place(x=350, y=175, width=120, height=25)
+l.pack(fill="both")
+
+
 # Bouton Start
 bouton=Button(fenetre, text="START", command=callback_start)
-bouton.place(x=350, y=175, width=120, height=25)
+bouton.place(x=5, y=175, width=120, height=25)
 
 # Bouton Store
 bouton=Button(fenetre, text="Score", command=callback_score)
-bouton.place(x=350, y=205, width=120, height=25)
+bouton.place(x=5, y=205, width=120, height=25)
 
 # Bouton camera settings
 bouton=Button(fenetre, text="Camera Settings", command=callback_camera_settings)
-bouton.place(x=350, y=235, width=120, height=25)
+bouton.place(x=5, y=235, width=120, height=25)
 
 # Bouton camera display
 bouton=Button(fenetre, text="Camera Display", command=callback_camera_display)
-bouton.place(x=350, y=265, width=120, height=25)
+bouton.place(x=5, y=265, width=120, height=25)
 
 # Bouton Strategy settings
 bouton=Button(fenetre, text="Strategy Settings", command=callback_strategy)
-bouton.place(x=350, y=295, width=120, height=25)
+bouton.place(x=5, y=295, width=120, height=25)
+
+# Bouton Close
+bouton=Button(fenetre, text="Close", command=fenetre.quit)
+bouton.place(x=5, y=295, width=120, height=25)
 
 fenetre.mainloop()
 
