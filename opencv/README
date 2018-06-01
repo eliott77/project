@@ -1,0 +1,89 @@
+-----------------------------
+Description des dossiers
+-----------------------------
+
+----------------------------
+Application Secondaire
+----------------------------
+
+01-zoom/
+├── opencv-zoom
+├── opencv-zoom.cpp
+├── pictures
+│   ├── image1-cropped.jpg
+│   └── image1-resize-800x600.jpg
+└── README
+
+
+-> Cette application permet de couper une partie de la photo principale.
+   Examples: voir pictures
+-> Voici un example d'utilisation:
+
+eliott@eliott-linux-pc:~/workstation/projects/project/opencv/01-zoom$ ./opencv-zoom 
+Select a ROI and then press SPACE or ENTER button!
+Cancel the selection process by pressing c button!
+roi.x: 286
+roi.y: 309
+roi.width: 68
+roi.height: 57
+Select a ROI and then press SPACE or ENTER button!
+Cancel the selection process by pressing c button!
+^C
+
+-> Cette application permet de mettre à jour les "define" suivant lorsque le robot est situé dans la zone verte (GREEN):
+   ZOOM_X_G      -> define présent dans l'application principale
+   ZOOM_Y_G      -> define présent dans l'application principale
+   ZOOM_WITH_G   -> define présent dans l'application principale
+   ZOOM_HEIGHT_G -> define présent dans l'application principale
+
+-> Cette application permet de mettre à jour les "define" suivant lorsque le robot est situé dans la zone orange (ORANGE):
+   ZOOM_X_O      -> define présent dans l'application principale
+   ZOOM_Y_O      -> define présent dans l'application principale
+   ZOOM_WITH_O   -> define présent dans l'application principale
+   ZOOM_HEIGHT_O -> define présent dans l'application principale
+
+-> !!! Attention cette application ne doit pas être déployé sur la RPI3 !!!
+   !!! Elle sert uniquement pour faire des tests suivant la position de la caméra par rapport au code couleur situé sur le panneau central. !!!
+
+----------------------------
+Application Principale
+----------------------------
+
+02-detect-color/
+├── opencv-detect-color
+├── opencv-detect-color.cpp
+└── README
+
+-> Cette application doit être déployé sur la RPI3.
+   Examples d'utilisation: 
+   Utilisez la commande "./opencv-detect-color GREEN" lorsque que le robot est situé dans la zone verte.
+   Utilisez la commande "./opencv-detect-color ORANGE" lorsque que le robot est situé dans la zone orange.
+
+-----------------------------
+Etape d'installation
+-----------------------------
+
+Etape 1
+--------
+Executez le script install-opencv.sh sur la RPI3.
+Remarque: vous pouvez executer cette même commande sur votre PC (Ubuntu 16.04 LTS)
+$ chmod 755 ./install-opencv.sh
+$ ./install-opencv.sh
+
+
+Etape 2
+--------
+Compiler les fichiers sources avec le compilateur dédié à la RPI3
+Compilateur utilisé ???
+
+Sinon vous pouvez compiler l'application avec la commande suivante
+$ g++ opencv-detect-color.cpp -o opencv-detect-color `pkg-config --cflags opencv` `pkg-config opencv --libs`
+
+Etape 3
+-------
+   Utilisez la commande "./opencv-detect-color GREEN" lorsque que le robot est situé dans la zone verte.
+   Utilisez la commande "./opencv-detect-color ORANGE" lorsque que le robot est situé dans la zone orange.
+
+Etape 4
+-------
+
